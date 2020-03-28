@@ -1,0 +1,30 @@
+{% extends 'apptd/basic.html' %}
+{% block title %}Create-task{% endblock %}
+{% block Mainpage-nav %}<a class="nav-item nav-link active" href="/apptd">Home <span class="sr-only">(current)</span></a>{% endblock %}
+
+{% block body %}<form action="createtask" method="post">{% csrf_token %}
+    <div class="form-group mx-2">
+        <label for="task">Enter-Task</label>
+        <input type="text" class="form-control" id="task" name='task' placeholder="Enter Your Task">
+    </div>
+
+    <div class="form-group mx-2">
+        <label for="duedate">Due-Date</label>
+        <input type="date" class="form-control" id="duedate" name='duedate' placeholder="Enter Due-Date">
+    </div>
+
+    <div class="form-group mx-2">
+        <label for="priority">Task-Priority</label>
+        <input type="text" class="form-control" id="priority" name='priority' placeholder="H / M / L">
+    </div>
+
+    <div class="form-group mx-2">
+        <label for="addlist">Add-To-List</label>
+        <input type="text" class="form-control" id="addlist" name='addlist' placeholder="Enter List Name">
+    </div>
+
+    <button type="submit" class="btn btn-primary mx-2">Done</button>
+
+</form>
+
+<a class="btn btn-primary mx-2 my-3" href="" role="button">Back</a>{% endblock %}

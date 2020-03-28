@@ -1,0 +1,18 @@
+{% extends 'apptd/basic.html' %}
+{% block title %}Tasks{% endblock %}
+{% block Mainpage-nav %}<a class="nav-item nav-link active" href="/apptd">Home <span class="sr-only">(current)</span></a>{% endblock %}
+
+{% block body %}
+
+<pre>      Tasks:<br>
+    {{Lists}}</pre><br><br><br>
+
+<form action="deltasks" method="post">{% csrf_token %}
+    <div class="form-group mx-2 my-3">
+        <label for="deltasks">Completed-Tasks</label>
+        <input type="text" class="form-control" id="deltasks" name='deltasks' placeholder="Task1,Task2,Task3,----------">
+    </div>
+    <button type="submit" class="btn btn-dark mx-2">Done</button>
+</form>
+
+{% endblock %}

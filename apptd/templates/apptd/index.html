@@ -1,0 +1,36 @@
+{% extends 'apptd/basic.html' %}
+
+{% block title %}Main-Page{% endblock %}
+
+{% block Mainpage-nav %}<a class="nav-item nav-link active" href="/apptd">Refresh <span class="sr-only">(current)</span></a>
+<a class="nav-item nav-link" href="createtask">Create-task</a>
+<a class="nav-item nav-link mx-3" href="/"><button type="button" class="btn btn-outline-danger">Logout</button></a>{% endblock %}
+
+{% block alert %}<div class="alert alert-success alert-dismissible fade show" role="alert">
+    <strong>WELCOME IN ToDo!</strong>  You can manage your task lists.
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>{% endblock %}
+
+{% block body %}
+
+<pre>      Lists {Name:Tasks}:<br>
+    {{List}}</pre><br>
+
+<form action="tasklist" method="post">{% csrf_token %}
+    <div class="form-group mx-2 my-3">
+        <label for="list">To-See_Task_list</label>
+        <input type="text" class="form-control" id="list" name='list' placeholder="Enter List Name">
+    </div>
+    <button type="submit" class="btn btn-success mx-2">Submit</button>
+</form>
+
+<form action="/apptd/dellist" method="post">{% csrf_token %}
+    <div class="form-group mx-2 my-3">
+        <label for="dellist">To-Delete-List</label>
+        <input type="text" class="form-control" id="dellist" name='dellist' placeholder="Enter List Name">
+    </div>
+    <button type="submit" class="btn btn-danger mx-2">Delete</button>
+</form>
+{% endblock %}
