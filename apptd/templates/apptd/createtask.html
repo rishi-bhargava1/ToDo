@@ -1,5 +1,6 @@
 {% extends 'apptd/basic.html' %}
 {% block title %}Create-task{% endblock %}
+{% block navhead-tag %}Create Your Task{% endblock %}
 {% block Mainpage-nav %}<a class="nav-item nav-link active" href="/apptd">Home <span class="sr-only">(current)</span></a>{% endblock %}
 
 {% block body %}<form action="createtask" method="post">{% csrf_token %}

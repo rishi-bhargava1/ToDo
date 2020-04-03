@@ -6,4 +6,5 @@ urlpatterns = [
     path('tasklist', views.tasklist, name='tasklist'),
     path('deltasks', views.deltasks, name='deltasks'),
     path('dellist', views.dellist, name='dellist'),
+    path('adview', views.adview, name='adview'),
 ]

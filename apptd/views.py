@@ -7,18 +7,24 @@ mydb = myclient['ToDodb']
 # def_mycol is default collection
 def_mycol = []
 # Create your views here.
+
+def coll_access():
+    collist = mydb.list_collection_names()
+    defaultcol = ['django_migrations', 'django_content_type', '__schema__', 'django_admin_log', 'auth_group',
+                  'auth_user', 'auth_user_user_permissions',
+                  'django_session', 'apptd_register', 'auth_permission', 'auth_group_permissions', 'auth_user_groups']
+
+    # coll = collextions in collist
+    collist = [coll for coll in collist if coll not in defaultcol]
+    collist.sort()
+    return (collist)
+    
 def index(request):
     """This func used to show lists-names with number of tasks on main page"""
-    dblist = mydb.list_collection_names()
-    defaultdb = ['django_migrations', 'django_content_type', '__schema__', 'django_admin_log', 'auth_group', 'auth_user', 'auth_user_user_permissions',
-                 'django_session', 'apptd_register', 'auth_permission', 'auth_group_permissions', 'auth_user_groups']
+    collist = coll_access()
+    pdict = {} # has {collections : no. of tasks}
 
-    # coll = collextions in dblist
-    dblist = [coll for coll in dblist if coll not in defaultdb]
-    dblist.sort()
-    pdict = {} # has collections : tasks
-
-    for coll in dblist:
+    for coll in collist:
         mycol = mydb[coll]
         doc = mycol.find()
         l = [i for i in doc]
@@ -59,16 +65,9 @@ def tasklist(request):
         if mlname=='':
             return render(request, 'apptd/')
 
-        dblist = mydb.list_collection_names()
-        defaultdb = ['django_migrations', 'django_content_type', '__schema__', 'django_admin_log', 'auth_group',
-                     'auth_user', 'auth_user_user_permissions',
-                     'django_session', 'apptd_register', 'auth_permission', 'auth_group_permissions', 'auth_user_groups']
+        collist = coll_access()
 
-        # coll = collextions in dblist
-        dblist = [coll for coll in dblist if coll not in defaultdb]
-        dblist.sort()
-
-        if mlname not in dblist:
+        if mlname not in collist:
             return render(request, 'apptd/index.html')
 
         else:
@@ -116,3 +115,20 @@ def dellist(request):
             mycol.drop()
             return render(request, 'apptd/index.html')
     return render(request, 'apptd/index.html')
+
+def adview(request):
+    if request.method=='POST':
+        pass
+
+    collist = coll_access()
+    pdict = {}  # has {collections : no. of tasks}
+
+    for coll in collist:
+        mycol = mydb[coll]
+        doc = mycol.find()
+        l = [i for i in doc]
+        pdict[coll] = len(l)
+
+    # parameters to pass in render()
+    params = {'List': pdict}
+    return render(request, 'apptd/adview.html', params)
