@@ -118,8 +118,11 @@ def dellist(request):
 
 def adview(request):
     if request.method=='POST':
-        pass
-
+        mlname = request.POST.get('listname', '')
+        moption = request.POST.get('option', '')
+        print("======================================")
+        print("mlname=",mlname,"mopton=",moption)
+        print("======================================")
     collist = coll_access()
     pdict = {}  # has {collections : no. of tasks}
 
