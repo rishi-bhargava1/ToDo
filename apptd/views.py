@@ -117,13 +117,41 @@ def dellist(request):
     return render(request, 'apptd/index.html')
 
 def adview(request):
+    collist = coll_access()
     if request.method=='POST':
         mlname = request.POST.get('listname', '')
         moption = request.POST.get('option', '')
         print("======================================")
         print("mlname=",mlname,"mopton=",moption)
         print("======================================")
-    collist = coll_access()
+
+        if mlname=='' or mlname not in collist:
+            return render(request, 'apptd/adview.html')
+
+        mycol = mydb[mlname]
+        def_mycol.insert(0,mlname)
+
+        #All are lists of dicts according priority
+        Hl=[]
+        Ml=[]
+        Ll=[]
+        if moption=='Priority':
+            for dict in mycol.find({}, {"_id" : 0, "Task" : 1, "Priority" : 1}):
+                print(dict['Priority'])
+                if dict['Priority'] == 'H':
+                    Hl.append(dict)
+                elif dict['Priority'] == 'M':
+                    Ml.append(dict)
+                else:
+                    Ll.append(dict)
+            print("Hl=",Hl, "Ml=",Ml, "Ll=",Ll)
+            pdict = []
+            pdict.extend(Hl)
+            pdict.extend(Ml)
+            pdict.extend(Ll)
+            params = {'List': pdict}
+            return render(request, 'apptd/adview.html', params)
+
     pdict = {}  # has {collections : no. of tasks}
 
     for coll in collist:
