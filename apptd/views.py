@@ -149,16 +149,9 @@ def adview(request):
 
         if moption=='Duedate':
             pdict = []
-            for dict in mycol.find({}, {"_id" : 0, "Task" : 1, "Duedate" : 1}):
-
-                # ddate.extend(dict["Duedate"].split('-'))
-                # ddate.reverse()
-               dt = dict["Duedate"][ 8: : ]
-               mn = dict["Duedate"][ 5:7 : ]
-               yr = dict["Duedate"][ 0:4 : ]
-               mdate = f"{dt}-{mn}-{yr}"
-               dict["Duedate"] = mdate
+            for dict in mycol.find({}, {"_id" : 0, "Task" : 1, "Duedate" : 1}).sort('Duedate'):
                pdict.append(dict)
+
             params = {'List': pdict}
             return render(request, 'apptd/adview.html', params)
 
