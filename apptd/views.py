@@ -148,6 +148,7 @@ def adview(request):
             return render(request, 'apptd/adview.html', params)
 
         if moption=='Duedate':
+            #  pdict is a list sorted dicts according duedate.
             pdict = []
             for dict in mycol.find({}, {"_id" : 0, "Task" : 1, "Duedate" : 1}).sort('Duedate'):
                pdict.append(dict)
@@ -155,8 +156,16 @@ def adview(request):
             params = {'List': pdict}
             return render(request, 'apptd/adview.html', params)
 
-    pdict = {}  # has {collections : no. of tasks}
+        if moption == 'Task-Only':
+            #  pdict is a list sorted dicts according task-only.
+            pdict = []
+            for dict in mycol.find({},{'_id' : 0, 'Task' : 1}).sort('Task'):
+                pdict.append(dict)
 
+            params = {'List' : pdict}
+            return render(request, 'apptd/adview.html', params)
+
+    pdict = {}  # has {collections : no. of tasks}
     for coll in collist:
         mycol = mydb[coll]
         pdict[coll] = mycol.count_documents({})
