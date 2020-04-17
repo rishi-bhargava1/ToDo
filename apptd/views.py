@@ -14,7 +14,8 @@ def coll_access():
                   'auth_user', 'auth_user_user_permissions',
                   'django_session', 'apptd_register', 'auth_permission', 'auth_group_permissions', 'auth_user_groups']
 
-    # coll = collextions in collist
+    # coll = collections in collist
+    # Filtering the collections to avoid 'defaultcol'
     collist = [coll for coll in collist if coll not in defaultcol]
     collist.sort()
     return (collist)
@@ -22,13 +23,11 @@ def coll_access():
 def index(request):
     """This func used to show lists-names with number of tasks on main page"""
     collist = coll_access()
-    pdict = {} # has {collections : no. of tasks}
+    pdict = {}  # has {collections : no. of tasks}
 
     for coll in collist:
         mycol = mydb[coll]
-        doc = mycol.find()
-        l = [i for i in doc]
-        pdict[coll]= len(l)
+        pdict[coll] = mycol.count_documents({})
 
     # parameters to pass in render()
     params = {'List' : pdict}
@@ -121,30 +120,26 @@ def adview(request):
     if request.method=='POST':
         mlname = request.POST.get('listname', '')
         moption = request.POST.get('option', '')
-        print("======================================")
-        print("mlname=",mlname,"mopton=",moption)
-        print("======================================")
-
+        print("mlname=",mlname,"moption",moption)
         if mlname=='' or mlname not in collist:
             return render(request, 'apptd/adview.html')
 
         mycol = mydb[mlname]
         def_mycol.insert(0,mlname)
 
-        #All are lists of dicts according priority
-        Hl=[]
-        Ml=[]
-        Ll=[]
         if moption=='Priority':
+            # All are lists of dicts according priority
+            Hl = []
+            Ml = []
+            Ll = []
             for dict in mycol.find({}, {"_id" : 0, "Task" : 1, "Priority" : 1}):
-                print(dict['Priority'])
                 if dict['Priority'] == 'H':
                     Hl.append(dict)
                 elif dict['Priority'] == 'M':
                     Ml.append(dict)
                 else:
                     Ll.append(dict)
-            print("Hl=",Hl, "Ml=",Ml, "Ll=",Ll)
+            #  pdict is a list sorted dicts according priority.
             pdict = []
             pdict.extend(Hl)
             pdict.extend(Ml)
@@ -152,13 +147,26 @@ def adview(request):
             params = {'List': pdict}
             return render(request, 'apptd/adview.html', params)
 
+        if moption=='Duedate':
+            pdict = []
+            for dict in mycol.find({}, {"_id" : 0, "Task" : 1, "Duedate" : 1}):
+
+                # ddate.extend(dict["Duedate"].split('-'))
+                # ddate.reverse()
+               dt = dict["Duedate"][ 8: : ]
+               mn = dict["Duedate"][ 5:7 : ]
+               yr = dict["Duedate"][ 0:4 : ]
+               mdate = f"{dt}-{mn}-{yr}"
+               dict["Duedate"] = mdate
+               pdict.append(dict)
+            params = {'List': pdict}
+            return render(request, 'apptd/adview.html', params)
+
     pdict = {}  # has {collections : no. of tasks}
 
     for coll in collist:
         mycol = mydb[coll]
-        doc = mycol.find()
-        l = [i for i in doc]
-        pdict[coll] = len(l)
+        pdict[coll] = mycol.count_documents({})
 
     # parameters to pass in render()
     params = {'List': pdict}
