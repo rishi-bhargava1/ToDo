@@ -7,5 +7,6 @@ urlpatterns = [
     path('deltasks', views.deltasks, name='deltasks'),
     path('dellist', views.dellist, name='dellist'),
     path('adview', views.adview, name='adview'),
-    path('edittask', views.edittask, name='edittask')
+    path('edittask', views.edittask, name='edittask'),
+    path('editdone', views.editdone, name='editdone')
 ]

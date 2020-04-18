@@ -6,6 +6,10 @@ myclient = pymongo.MongoClient(uri)
 mydb = myclient['ToDodb']
 # def_mycol is default collection
 def_mycol = ['default_value']
+# def-task is default taskname
+def_task = ['default_name']
+# This list contains dictionary having task : name, duedate, priority
+dftask_detail = ['default']
 # Create your views here.
 
 def coll_access():
@@ -101,7 +105,6 @@ def deltasks(request):
                 myquery = {'Task' : deltasks[i]}
                 x = mycol.delete_one(myquery)
                 list.insert(0,x)
-            print(f"{list[0].deleted_count} tasks deleted......")
             return render(request, 'apptd/index.html')
     return render(request, 'apptd/tasklist.html')
 
@@ -123,12 +126,11 @@ def adview(request):
     if request.method=='POST':
         mlname = request.POST.get('listname', '')
         moption = request.POST.get('option', '')
-        print("mlname=",mlname,"moption",moption)
+
         if mlname=='' or mlname not in collist:
             return render(request, 'apptd/adview.html')
 
         mycol = mydb[mlname]
-        # def_mycol.insert(0,mlname)
         if moption=='Priority':
             # All are lists of dicts according priority
             Hl = []
@@ -181,12 +183,39 @@ def edittask(request):
         mycol = mydb[def_mycol[0]]
         mtask = request.POST.get('mtask', '')
         if mtask == '' or mycol.find_one({'Task' : mtask}) == None:
-            print("Not find")
+
             return render(request, 'apptd/index.html')
 
+        # To update def_task
+        def_task.clear()
+        def_task.append(mtask)
         doc = mycol.find_one({'Task' : mtask})
-        print("doc=",doc)
         params = {'name' : doc['Task'], 'duedate' : doc['Duedate'], 'priority' : doc['Priority']}
-        print("params=",params)
+        # To update list dftask_detail
+        dftask_detail.clear()
+        dftask_detail.append(params)
         return render(request, 'apptd/edittask.html', params)
-    # return render(request, 'apptd/edittask.html')
+
+def editdone(request):
+    mycol = mydb[def_mycol[0]]
+    mtask = def_task[0]
+    # dict containing all details of selected task to edit.
+    dict = dftask_detail[0]
+
+    if request.method=='POST':
+        tname = request.POST.get('tname', '')
+        tdate = request.POST.get('tdate', '')
+        tpriority = request.POST.get('tpriority', '')
+
+        if tname == '': tname = dict['name']
+        if tdate == '': tdate = dict['duedate']
+        if tpriority == '': tpriority = dict['priority']
+        update = {'Task' : tname, 'Duedate' : tdate, 'Priority' : tpriority}
+        mycol.update_one({'Task' : mtask}, {'$set' : update})
+    return HttpResponse('Task Updated...')
+
+
+
+
+
+
