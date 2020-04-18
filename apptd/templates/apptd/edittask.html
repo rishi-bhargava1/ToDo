@@ -1,0 +1,26 @@
+{% extends 'apptd/basic.html' %}
+
+{% block title %}edittask-Page{% endblock %}
+{% block navhead-tag %}Edit Task{% endblock %}
+{% block Mainpage-nav %}<a class="nav-item nav-link active" href="/apptd">Home <span class="sr-only">(current)</span></a>{% endblock %}
+
+{% block body %}<form action="#" method="post">{% csrf_token %}
+    <div class="form-group mx-2">
+        <label for="tname">Task-Name</label>
+        <input type="text" class="form-control" id="tname" name='tname' placeholder={{name}}>
+    </div>
+
+    <div class="form-group mx-2">
+        <h6>Old Due-date : {{duedate}}</h6>
+        <label for="duedate">New Due-Date</label>
+        <input type="date" class="form-control" id="duedate" name='duedate' placeholder="">
+    </div>
+
+    <div class="form-group mx-2">
+        <label for="priority">Task-Priority</label>
+        <input type="text" class="form-control" id="priority" name='priority' placeholder={{priority}}>
+    </div>
+
+    <button type="submit" class="btn btn-primary mx-2">Done</button>
+
+</form> {% endblock %}

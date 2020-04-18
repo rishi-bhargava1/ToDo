@@ -5,7 +5,7 @@ uri = "mongodb://localhost:27017/"
 myclient = pymongo.MongoClient(uri)
 mydb = myclient['ToDodb']
 # def_mycol is default collection
-def_mycol = []
+def_mycol = ['default_value']
 # Create your views here.
 
 def coll_access():
@@ -62,7 +62,7 @@ def tasklist(request):
         mlname = request.POST.get('list', '')
 
         if mlname=='':
-            return render(request, 'apptd/')
+            return render(request, 'apptd/index.html')
 
         collist = coll_access()
 
@@ -73,7 +73,10 @@ def tasklist(request):
             # Collection define here------
             pdoc=[]
             mycol = mydb[mlname]
-            def_mycol.insert(0,mlname)
+            """ def_mycol get the collection name (list name) for recorded to what list name
+            we had selected to see it's tasks"""
+            def_mycol.clear()
+            def_mycol.append(mlname)
             x = mycol.find({}, {"_id":0, "Task":1, "Duedate":1, "Priority":1})
 
             for i in x:
@@ -88,11 +91,11 @@ def deltasks(request):
         mdeltasks = request.POST.get('deltasks','')
 
         if mdeltasks=='':
-            return render(request, 'apptd/tasklist.html')
+            return render(request, 'apptd/index.html')
 
         else:
             deltasks = mdeltasks.split(',')
-            mycol = mydb[def_mycol[0]]
+            mycol = def_mycol[0]
             list = []
             for i in range(len(deltasks)):
                 myquery = {'Task' : deltasks[i]}
@@ -125,8 +128,7 @@ def adview(request):
             return render(request, 'apptd/adview.html')
 
         mycol = mydb[mlname]
-        def_mycol.insert(0,mlname)
-
+        # def_mycol.insert(0,mlname)
         if moption=='Priority':
             # All are lists of dicts according priority
             Hl = []
@@ -173,3 +175,18 @@ def adview(request):
     # parameters to pass in render()
     params = {'List': pdict}
     return render(request, 'apptd/adview.html', params)
+
+def edittask(request):
+    if request.method=='POST':
+        mycol = mydb[def_mycol[0]]
+        mtask = request.POST.get('mtask', '')
+        if mtask == '' or mycol.find_one({'Task' : mtask}) == None:
+            print("Not find")
+            return render(request, 'apptd/index.html')
+
+        doc = mycol.find_one({'Task' : mtask})
+        print("doc=",doc)
+        params = {'name' : doc['Task'], 'duedate' : doc['Duedate'], 'priority' : doc['Priority']}
+        print("params=",params)
+        return render(request, 'apptd/edittask.html', params)
+    # return render(request, 'apptd/edittask.html')

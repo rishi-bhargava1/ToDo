@@ -3,9 +3,10 @@
 {% block Mainpage-nav %}<a class="nav-item nav-link active" href="/apptd">Home <span class="sr-only">(current)</span></a>{% endblock %}
 
 {% block body %}
+<a class="btn btn-primary mx-2 my-3" href="createtask" role="button">[+]Create-Task</a>
 
 <pre>      Tasks:<br>
-    {{Lists}}</pre><br><br><br>
+    {{Lists}}</pre><br><br>
 
 <form action="deltasks" method="post">{% csrf_token %}
     <div class="form-group mx-2 my-3">
@@ -14,5 +15,12 @@
     </div>
     <button type="submit" class="btn btn-dark mx-2">Done</button>
 </form>
-<a class="btn btn-primary mx-2 my-3" href="createtask" role="button">+Create-task</a>
+
+<form action="edittask" method="post">{% csrf_token %}
+    <div class="form-group mx-2 my-3">
+        <label for="mtask">Task-To-Edit</label>
+        <input type="text" class="form-control" id="mtask" name='mtask' placeholder="Enter Task Name">
+    </div>
+    <button type="submit" class="btn btn-success mx-2">Edit</button>
+</form>
 {% endblock %}
