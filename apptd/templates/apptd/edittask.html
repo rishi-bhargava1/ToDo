@@ -12,15 +12,19 @@
 
     <div class="form-group mx-2">
         <h6>Old Due-date : {{duedate}}</h6>
-        <label for="duedate">New Due-Date</label>
-        <input type="date" class="form-control" id="duedate" name='duedate' placeholder="">
+        <label for="tdate">New Due-Date</label>
+        <input type="date" class="form-control" id="tdate" name='tdate' placeholder="">
     </div>
 
     <div class="form-group mx-2">
-        <label for="priority">Task-Priority</label>
-        <input type="text" class="form-control" id="priority" name='priority' placeholder={{priority}}>
-    </div>
-
+    <h6>Old Priority: {{priority}}</h6>
+    <label for="tpriority">New Priority</label>
+    <select class="form-control" id="tpriority" name="tpriority">
+      <option>H</option>
+      <option>M</option>
+      <option>L</option>
+    </select>
+  </div>
     <button type="submit" class="btn btn-primary mx-2">Done</button>
 
 </form> {% endblock %}
