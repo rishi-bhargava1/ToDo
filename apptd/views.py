@@ -99,7 +99,7 @@ def deltasks(request):
 
         else:
             deltasks = mdeltasks.split(',')
-            mycol = def_mycol[0]
+            mycol = mydb[def_mycol[0]]
             list = []
             for i in range(len(deltasks)):
                 myquery = {'Task' : deltasks[i]}
